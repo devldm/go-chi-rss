@@ -1,2 +1,4 @@
 go-server-rss
 .env
+.podman
+notes.md
