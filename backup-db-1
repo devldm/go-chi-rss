@@ -1,0 +1,294 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.1 (Debian 16.1-1.pgdg120+1)
+-- Dumped by pg_dump version 16.1
+
+-- Started on 2024-01-21 05:03:24 UTC
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 3388 (class 1262 OID 16389)
+-- Name: rssagg; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE rssagg WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
+
+
+ALTER DATABASE rssagg OWNER TO postgres;
+
+\connect rssagg
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 219 (class 1259 OID 16450)
+-- Name: feed_follows; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.feed_follows (
+    id uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    user_id uuid NOT NULL,
+    feed_id uuid NOT NULL
+);
+
+
+ALTER TABLE public.feed_follows OWNER TO postgres;
+
+--
+-- TOC entry 218 (class 1259 OID 16436)
+-- Name: feeds; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.feeds (
+    id uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    name text NOT NULL,
+    url text NOT NULL,
+    user_id uuid NOT NULL
+);
+
+
+ALTER TABLE public.feeds OWNER TO postgres;
+
+--
+-- TOC entry 216 (class 1259 OID 16391)
+-- Name: goose_db_version; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.goose_db_version (
+    id integer NOT NULL,
+    version_id bigint NOT NULL,
+    is_applied boolean NOT NULL,
+    tstamp timestamp without time zone DEFAULT now()
+);
+
+
+ALTER TABLE public.goose_db_version OWNER TO postgres;
+
+--
+-- TOC entry 215 (class 1259 OID 16390)
+-- Name: goose_db_version_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.goose_db_version_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.goose_db_version_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 3389 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: goose_db_version_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.goose_db_version_id_seq OWNED BY public.goose_db_version.id;
+
+
+--
+-- TOC entry 217 (class 1259 OID 16405)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id uuid NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL,
+    name text NOT NULL,
+    api_key character varying(64) DEFAULT encode(sha256(((random())::text)::bytea), 'hex'::text) NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- TOC entry 3215 (class 2604 OID 16394)
+-- Name: goose_db_version id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.goose_db_version ALTER COLUMN id SET DEFAULT nextval('public.goose_db_version_id_seq'::regclass);
+
+
+--
+-- TOC entry 3382 (class 0 OID 16450)
+-- Dependencies: 219
+-- Data for Name: feed_follows; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+
+
+--
+-- TOC entry 3381 (class 0 OID 16436)
+-- Dependencies: 218
+-- Data for Name: feeds; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.feeds VALUES ('7f557e42-dc21-4eff-be94-6d7b5534c5a8', '2024-01-20 08:10:40.876889', '2024-01-20 08:10:40.876889', 'Lane''s Blog', 'https://wagslane.dev/index.xml', 'a1c30acf-a927-4daa-9104-41aaf8f3a67e');
+INSERT INTO public.feeds VALUES ('d7681e08-347a-40a2-bd00-edb9696a2319', '2024-01-20 08:20:01.919704', '2024-01-20 08:20:01.919704', 'New Heights with Jason and Travis Kelce', 'https://feeds.megaphone.fm/newheights', 'a1c30acf-a927-4daa-9104-41aaf8f3a67e');
+INSERT INTO public.feeds VALUES ('c50d9552-2c35-4961-99c4-b869d2d953cb', '2024-01-20 08:20:45.009604', '2024-01-20 08:20:45.009604', 'SmartLess', 'https://rss.art19.com/smartless', 'a1c30acf-a927-4daa-9104-41aaf8f3a67e');
+
+
+--
+-- TOC entry 3379 (class 0 OID 16391)
+-- Dependencies: 216
+-- Data for Name: goose_db_version; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.goose_db_version VALUES (1, 0, true, '2024-01-20 05:18:10.721346');
+INSERT INTO public.goose_db_version VALUES (3, 1, true, '2024-01-20 05:20:59.15133');
+INSERT INTO public.goose_db_version VALUES (4, 2, true, '2024-01-20 06:59:13.759978');
+INSERT INTO public.goose_db_version VALUES (6, 3, true, '2024-01-20 08:04:27.199551');
+INSERT INTO public.goose_db_version VALUES (7, 4, true, '2024-01-21 03:50:47.577355');
+
+
+--
+-- TOC entry 3380 (class 0 OID 16405)
+-- Dependencies: 217
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+INSERT INTO public.users VALUES ('a1c30acf-a927-4daa-9104-41aaf8f3a67e', '2024-01-20 05:47:03.602254', '2024-01-20 05:47:03.602254', 'Bobby chuckles', '4c1fb1975e754acbe17b362d8fd12e133dd8cfa97d56e1273fe230a721c82964');
+INSERT INTO public.users VALUES ('8970a9a2-cd86-47da-a495-04f33e701b76', '2024-01-20 05:51:11.089865', '2024-01-20 05:51:11.089865', 'Rita Biggles', '2b9fca939968ffc92fec20d96443244c069c889f7c29f65338a7284f1865c1e5');
+INSERT INTO public.users VALUES ('7c05753b-dea9-4a36-9df4-6267582d2ad7', '2024-01-20 07:25:39.816553', '2024-01-20 07:25:39.816553', 'Clive Hacklebush', '8feef8b37982882550192adb8bada7fe540717b1b733da3c8b46420dcbc39056');
+INSERT INTO public.users VALUES ('1196ae64-1961-47f9-98c3-1cb13b6d3711', '2024-01-20 07:26:32.875761', '2024-01-20 07:26:32.875761', 'Barry Finnegan', 'ae53aecb96d5366a3ff16e643c2b48f02781a928cdd5167069fafc8dbfc5fbf3');
+INSERT INTO public.users VALUES ('251f5b46-ac88-426a-954b-232184561b5d', '2024-01-20 07:27:29.768985', '2024-01-20 07:27:29.768985', 'Cindy Mackledawn', '826d2936fcc6e5dd7889b225b01fac9673680afb8f2468948818e12b13168671');
+
+
+--
+-- TOC entry 3390 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: goose_db_version_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.goose_db_version_id_seq', 7, true);
+
+
+--
+-- TOC entry 3229 (class 2606 OID 16454)
+-- Name: feed_follows feed_follows_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feed_follows
+    ADD CONSTRAINT feed_follows_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3231 (class 2606 OID 16456)
+-- Name: feed_follows feed_follows_user_id_feed_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feed_follows
+    ADD CONSTRAINT feed_follows_user_id_feed_id_key UNIQUE (user_id, feed_id);
+
+
+--
+-- TOC entry 3225 (class 2606 OID 16442)
+-- Name: feeds feeds_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feeds
+    ADD CONSTRAINT feeds_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3227 (class 2606 OID 16444)
+-- Name: feeds feeds_url_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feeds
+    ADD CONSTRAINT feeds_url_key UNIQUE (url);
+
+
+--
+-- TOC entry 3219 (class 2606 OID 16397)
+-- Name: goose_db_version goose_db_version_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.goose_db_version
+    ADD CONSTRAINT goose_db_version_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3221 (class 2606 OID 16414)
+-- Name: users users_api_key_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_api_key_key UNIQUE (api_key);
+
+
+--
+-- TOC entry 3223 (class 2606 OID 16411)
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3233 (class 2606 OID 16462)
+-- Name: feed_follows feed_follows_feed_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feed_follows
+    ADD CONSTRAINT feed_follows_feed_id_fkey FOREIGN KEY (feed_id) REFERENCES public.feeds(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3234 (class 2606 OID 16457)
+-- Name: feed_follows feed_follows_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feed_follows
+    ADD CONSTRAINT feed_follows_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 3232 (class 2606 OID 16445)
+-- Name: feeds feeds_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.feeds
+    ADD CONSTRAINT feeds_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
+
+
+-- Completed on 2024-01-21 05:03:24 UTC
+
+--
+-- PostgreSQL database dump complete
+--
+
