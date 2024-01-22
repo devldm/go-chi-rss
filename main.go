@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/devldm/go-server-rss/internal/database"
 	"github.com/go-chi/chi/v5"
@@ -42,9 +43,16 @@ func main() {
 		log.Fatal("Cant create db connection", err)
 	}
 
+	db := database.New(conn)
 	apiCfg := apiConfig{
-		DB: database.New(conn),
+		DB: db,
 	}
+
+	go startScraping(
+		db,
+		10,
+		time.Minute,
+	)
 
 	router := chi.NewRouter()
 
@@ -81,6 +89,7 @@ func main() {
 	}
 
 	log.Printf("server starting on port %v", portString)
+
 	err = srv.ListenAndServe()
 	if err != nil {
 		log.Fatal(err)
